@@ -1,0 +1,30 @@
+{
+  "name": "@fsplit/db",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "exports": {
+    ".": "./src/index.ts",
+    "./schema": "./src/schema.ts"
+  },
+  "scripts": {
+    "generate": "bunx drizzle-kit generate",
+    "migrate": "bunx drizzle-kit migrate",
+    "check": "bunx drizzle-kit check",
+    "seed": "bun ./src/seed/seed.ts"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/pg": "^8.15.5",
+    "drizzle-kit": "^0.31.4",
+    "tsx": "^4.20.5"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.1",
+    "drizzle-orm": "^0.44.5",
+    "pg": "^8.16.3"
+  }
+}
