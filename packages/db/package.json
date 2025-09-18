@@ -1,6 +1,6 @@
 {
   "name": "@fsplit/db",
-  "module": "index.ts",
+  "module": "./src/index.ts",
   "type": "module",
   "private": true,
   "exports": {
@@ -14,6 +14,7 @@
     "seed": "bun ./src/seed/seed.ts"
   },
   "devDependencies": {
+    "@fsplit/types": "*",
     "@types/bun": "latest",
     "@types/pg": "^8.15.5",
     "drizzle-kit": "^0.31.4",
