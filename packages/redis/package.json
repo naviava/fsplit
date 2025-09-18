@@ -1,12 +1,11 @@
 {
-  "name": "@fsplit/utils",
+  "name": "@fsplit/redis",
   "module": "./src/index.ts",
   "type": "module",
   "private": true,
   "exports": {
     ".": "./src/index.ts",
-    "./server/*": "./src/server/*.ts",
-    "./client": "./src/client/index.ts"
+    "./keys": "./src/keys.ts"
   },
   "devDependencies": {
     "@fsplit/types": "*",
@@ -16,8 +15,6 @@
     "typescript": "^5"
   },
   "dependencies": {
-    "@fsplit/db": "*",
-    "@fsplit/redis": "*",
-    "@trpc/server": "^11.5.1"
+    "ioredis": "^5.7.0"
   }
 }

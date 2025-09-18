@@ -16,7 +16,7 @@ class Database {
       // }
       const pool = new Pool({
         connectionString:
-          "postgresql://dbadmin:Welcome123@localhost:6543/plyseradb?schema=public",
+          "postgresql://dbadmin:Welcome123@localhost:6543/fsplitdb?schema=public",
       });
       Database.instance = drizzle({
         client: pool,
