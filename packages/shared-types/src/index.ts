@@ -1,4 +1,6 @@
 // Database enums.
+export const ProvidersEnum = ["CREDENTIALS", "GOOGLE", "GITHUB"] as const;
+
 export const CurrencyCodeEnum = [
   "INR",
   "USD",

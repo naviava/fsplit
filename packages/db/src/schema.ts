@@ -5,6 +5,7 @@ import { nanoid } from "nanoid";
 
 import {
   CurrencyCodeEnum,
+  ProvidersEnum,
   GroupRoleEnum,
   GroupTypeEnum,
   LogTypeEnum,
@@ -19,6 +20,7 @@ import { timestamps } from "./constants";
  *
  */
 
+export const providersEnum = t.pgEnum("providers_enum", ProvidersEnum);
 export const currencyCodeEnum = t.pgEnum(
   "currency_code_enum",
   CurrencyCodeEnum
@@ -40,6 +42,8 @@ export const users = t.pgTable(
   {
     id: t.uuid().primaryKey().defaultRandom(),
     email: t.varchar({ length: 255 }).unique().notNull(),
+    provider: providersEnum().default("CREDENTIALS").notNull(),
+    oauthId: t.varchar({ length: 100 }),
     phone: t.varchar({ length: 255 }),
     isMerged: t.boolean().default(false).notNull(),
     name: t.varchar({ length: 255 }),
@@ -162,7 +166,7 @@ export const invitations = t.pgTable(
     id: t.serial().primaryKey(),
     email: t.varchar({ length: 255 }).unique().notNull(),
     fromId: t
-      .text()
+      .uuid()
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
     ...timestamps,
@@ -255,11 +259,11 @@ export const expensePayments = t.pgTable(
     id: t.uuid().primaryKey().defaultRandom(),
     amount: t.bigint({ mode: "bigint" }).notNull(),
     expenseId: t
-      .text()
+      .uuid()
       .notNull()
       .references(() => expenses.id, { onDelete: "cascade" }),
     groupMemberId: t
-      .text()
+      .uuid()
       .notNull()
       .references(() => groupMembers.id, { onDelete: "restrict" }),
     ...timestamps,
@@ -267,7 +271,7 @@ export const expensePayments = t.pgTable(
   (table) => [
     t.index().on(table.expenseId),
     t
-      .unique("expense_id_group_member_id_unique")
+      .unique("payment_expense_id_group_member_id_unique")
       .on(table.expenseId, table.groupMemberId),
   ]
 );
@@ -291,7 +295,7 @@ export const expenseSplits = t.pgTable(
   (table) => [
     t.index().on(table.expenseId),
     t
-      .unique("expense_id_group_member_id_unique")
+      .unique("split_expense_id_group_member_id_unique")
       .on(table.expenseId, table.groupMemberId),
   ]
 );
