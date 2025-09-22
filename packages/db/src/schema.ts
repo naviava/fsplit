@@ -46,7 +46,7 @@ export const users = t.pgTable(
     oauthId: t.varchar({ length: 100 }),
     phone: t.varchar({ length: 255 }),
     isMerged: t.boolean().default(false).notNull(),
-    name: t.varchar({ length: 255 }),
+    name: t.varchar({ length: 255 }).notNull(),
     firstName: t.varchar({ length: 255 }),
     middleName: t.varchar({ length: 255 }),
     lastName: t.varchar({ length: 255 }),
@@ -55,7 +55,8 @@ export const users = t.pgTable(
     preferredCurrency: currencyCodeEnum().default("INR").notNull(),
     role: roleEnum().default("USER").notNull(),
     disabled: t.boolean().default(false).notNull(),
-    emailVerified: t.timestamp({ withTimezone: true }),
+    emailVerified: t.boolean().default(false).notNull(),
+    emailVerifiedAt: t.timestamp({ withTimezone: true }),
     ...timestamps,
   },
   (table) => [
@@ -67,6 +68,60 @@ export const users = t.pgTable(
     ),
   ]
 );
+
+// Sessions table
+export const sessions = t.pgTable(
+  "sessions",
+  {
+    id: t.uuid().primaryKey().defaultRandom(),
+    token: t.varchar({ length: 255 }).unique().notNull(),
+    expiresAt: t.timestamp({ withTimezone: true }).notNull(),
+    ipAddress: t.varchar({ length: 255 }),
+    userAgent: t.text(),
+    userId: t
+      .uuid()
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    ...timestamps,
+  },
+  (table) => [t.index().on(table.userId)]
+);
+
+// Accounts table
+export const accounts = t.pgTable(
+  "accounts",
+  {
+    id: t.uuid().primaryKey().defaultRandom(),
+    accountId: t.varchar({ length: 255 }).notNull(),
+    providerId: t.varchar({ length: 255 }).notNull(),
+    accessToken: t.text(),
+    refreshToken: t.text(),
+    accessTokenExpiresAt: t.timestamp({ withTimezone: true }),
+    refreshTokenExpiresAt: t.timestamp({ withTimezone: true }),
+    scope: t.text(),
+    idToken: t.text(),
+    password: t.varchar({ length: 255 }),
+    userId: t
+      .uuid()
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    ...timestamps,
+  },
+  (table) => [
+    t
+      .unique("provider_id_account_id_unique")
+      .on(table.providerId, table.accountId),
+  ]
+);
+
+// Verifications table
+export const verifications = t.pgTable("verifications", {
+  id: t.uuid().primaryKey().defaultRandom(),
+  identifier: t.varchar({ length: 255 }).notNull(),
+  value: t.varchar({ length: 255 }).notNull(),
+  expiresAt: t.timestamp({ withTimezone: true }).notNull(),
+  ...timestamps,
+});
 
 // Confirm Email Tokens table.
 export const confirmEmailTokens = t.pgTable(

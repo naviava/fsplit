@@ -12,6 +12,23 @@ CREATE TABLE "account_verifications" (
 	CONSTRAINT "account_verifications_userId_unique" UNIQUE("user_id")
 );
 --> statement-breakpoint
+CREATE TABLE "accounts" (
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"account_id" varchar(255) NOT NULL,
+	"provider_id" varchar(255) NOT NULL,
+	"access_token" text,
+	"refresh_token" text,
+	"access_token_expires_at" timestamp with time zone,
+	"refresh_token_expires_at" timestamp with time zone,
+	"scope" text,
+	"id_token" text,
+	"password" varchar(255),
+	"user_id" uuid NOT NULL,
+	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
+	"updated_at" timestamp with time zone DEFAULT now() NOT NULL,
+	CONSTRAINT "provider_id_account_id_unique" UNIQUE("provider_id","account_id")
+);
+--> statement-breakpoint
 CREATE TABLE "confirm_email_tokens" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"token" varchar(25) NOT NULL,
@@ -150,6 +167,18 @@ CREATE TABLE "password_reset_tokens" (
 	CONSTRAINT "password_reset_tokens_userEmail_unique" UNIQUE("user_email")
 );
 --> statement-breakpoint
+CREATE TABLE "sessions" (
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"token" varchar(255) NOT NULL,
+	"expires_at" timestamp with time zone NOT NULL,
+	"ip_address" varchar(255),
+	"user_agent" text,
+	"user_id" uuid NOT NULL,
+	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
+	"updated_at" timestamp with time zone DEFAULT now() NOT NULL,
+	CONSTRAINT "sessions_token_unique" UNIQUE("token")
+);
+--> statement-breakpoint
 CREATE TABLE "settlements" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"amount" bigint NOT NULL,
@@ -190,7 +219,7 @@ CREATE TABLE "users" (
 	"oauth_id" varchar(100),
 	"phone" varchar(255),
 	"is_merged" boolean DEFAULT false NOT NULL,
-	"name" varchar(255),
+	"name" varchar(255) NOT NULL,
 	"first_name" varchar(255),
 	"middle_name" varchar(255),
 	"last_name" varchar(255),
@@ -199,14 +228,25 @@ CREATE TABLE "users" (
 	"preferred_currency" "currency_code_enum" DEFAULT 'INR' NOT NULL,
 	"role" "role_enum" DEFAULT 'USER' NOT NULL,
 	"disabled" boolean DEFAULT false NOT NULL,
-	"email_verified" timestamp with time zone,
+	"email_verified" boolean DEFAULT false NOT NULL,
+	"email_verified_at" timestamp with time zone,
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
 	"updated_at" timestamp with time zone DEFAULT now() NOT NULL,
 	CONSTRAINT "users_email_unique" UNIQUE("email"),
 	CONSTRAINT "provider_password_oauth_check" CHECK (((provider = 'CREDENTIALS' AND hashed_password IS NOT NULL) OR (provider != 'CREDENTIALS' AND oauth_id IS NOT NULL)))
 );
 --> statement-breakpoint
+CREATE TABLE "verifications" (
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"identifier" varchar(255) NOT NULL,
+	"value" varchar(255) NOT NULL,
+	"expires_at" timestamp with time zone NOT NULL,
+	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
+	"updated_at" timestamp with time zone DEFAULT now() NOT NULL
+);
+--> statement-breakpoint
 ALTER TABLE "account_verifications" ADD CONSTRAINT "account_verifications_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "accounts" ADD CONSTRAINT "accounts_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "confirm_email_tokens" ADD CONSTRAINT "confirm_email_tokens_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "expense_payments" ADD CONSTRAINT "expense_payments_expense_id_expenses_id_fk" FOREIGN KEY ("expense_id") REFERENCES "public"."expenses"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "expense_payments" ADD CONSTRAINT "expense_payments_group_member_id_group_members_id_fk" FOREIGN KEY ("group_member_id") REFERENCES "public"."group_members"("id") ON DELETE restrict ON UPDATE no action;--> statement-breakpoint
@@ -228,6 +268,7 @@ ALTER TABLE "logs" ADD CONSTRAINT "logs_expense_id_expenses_id_fk" FOREIGN KEY (
 ALTER TABLE "logs" ADD CONSTRAINT "logs_settlement_id_settlements_id_fk" FOREIGN KEY ("settlement_id") REFERENCES "public"."settlements"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "logs" ADD CONSTRAINT "logs_friend_request_id_friend_requests_id_fk" FOREIGN KEY ("friend_request_id") REFERENCES "public"."friend_requests"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "password_reset_tokens" ADD CONSTRAINT "password_reset_tokens_user_email_users_email_fk" FOREIGN KEY ("user_email") REFERENCES "public"."users"("email") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "sessions" ADD CONSTRAINT "sessions_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "settlements" ADD CONSTRAINT "settlements_group_id_groups_id_fk" FOREIGN KEY ("group_id") REFERENCES "public"."groups"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "settlements" ADD CONSTRAINT "settlements_created_by_id_users_id_fk" FOREIGN KEY ("created_by_id") REFERENCES "public"."users"("id") ON DELETE restrict ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "settlements" ADD CONSTRAINT "settlements_last_modified_by_id_users_id_fk" FOREIGN KEY ("last_modified_by_id") REFERENCES "public"."users"("id") ON DELETE restrict ON UPDATE no action;--> statement-breakpoint
@@ -249,6 +290,7 @@ CREATE UNIQUE INDEX "group_id_email_unique" ON "group_members" USING btree ("gro
 CREATE UNIQUE INDEX "invitations_email_index" ON "invitations" USING btree ("email");--> statement-breakpoint
 CREATE UNIQUE INDEX "password_reset_tokens_token_index" ON "password_reset_tokens" USING btree ("token");--> statement-breakpoint
 CREATE INDEX "password_reset_tokens_expires_at_index" ON "password_reset_tokens" USING btree ("expires_at");--> statement-breakpoint
+CREATE INDEX "sessions_user_id_index" ON "sessions" USING btree ("user_id");--> statement-breakpoint
 CREATE INDEX "settlements_group_id_index" ON "settlements" USING btree ("group_id");--> statement-breakpoint
 CREATE INDEX "settlements_from_id_index" ON "settlements" USING btree ("from_id");--> statement-breakpoint
 CREATE INDEX "settlements_to_id_index" ON "settlements" USING btree ("to_id");--> statement-breakpoint

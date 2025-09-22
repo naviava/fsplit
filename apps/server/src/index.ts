@@ -3,11 +3,16 @@ import express from "express";
 import cors from "cors";
 
 import { createExpressMiddleware } from "@trpc/server/adapters/express";
+import { toNodeHandler } from "better-auth/node";
 
-import { SocketService } from "./services/socket";
-import Env from "./lib/env";
 import { createContext } from "./config/trpc.config";
 import { initListeners } from "./services/redis-sub";
+import { SocketService } from "./services/socket";
+
+import { appRouter } from "./routes";
+import { auth } from "./lib/auth";
+
+import Env from "./lib/env";
 
 const PORT = Env.PORT || 5000;
 
@@ -17,7 +22,8 @@ export const socket = new SocketService(server);
 
 app.use(
   cors({
-    origin: "*",
+    origin: Env.WEB_URL,
+    methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })
 );
@@ -25,6 +31,8 @@ app.use(
 app.get("/", (req, res) => {
   res.send("Hello from Express server");
 });
+
+app.all("/api/auth/*any", toNodeHandler(auth));
 
 // tRPC Routes.
 app.use(
