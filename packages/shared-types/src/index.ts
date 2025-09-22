@@ -1,3 +1,28 @@
+// Database enums.
+export const CurrencyCodeEnum = [
+  "INR",
+  "USD",
+  "GBP",
+  "EUR",
+  "JPY",
+  "CHF",
+] as const;
+
+export const RoleEnum = ["USER", "ADMIN"] as const;
+
+export const GroupTypeEnum = ["TRIP", "HOME", "COUPLE", "OTHER"] as const;
+
+export const GroupRoleEnum = ["MANAGER", "MEMBER"] as const;
+
+export const LogTypeEnum = [
+  "USER",
+  "GROUP",
+  "EXPENSE",
+  "SETTLEMENT",
+  "FRIEND_REQUEST",
+] as const;
+
+// Error codes and interface.
 export type TErrorCode =
   | "BAD_REQUEST"
   | "UNAUTHORIZED"
