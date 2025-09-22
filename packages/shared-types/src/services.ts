@@ -24,4 +24,6 @@ export interface TAuthPayload {
 // Add other extended payloads types here.
 
 // Service type and payload object types.
-export type TServicePayload = IServiceMessage<"error", TErrorPayload>;
+export type TServicePayload =
+  | IServiceMessage<"error", TErrorPayload>
+  | IServiceMessage<"auth", TAuthPayload>;

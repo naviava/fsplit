@@ -1,0 +1,30 @@
+{
+  "name": "server",
+  "module": "./src/index.ts",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "start": "bun ./src/index.ts",
+    "dev": "bun --watch ./src/index.ts"
+  },
+  "devDependencies": {
+    "@fsplit/types": "*",
+    "@types/bun": "latest",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.3",
+    "@types/ws": "^8.18.1"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "@fsplit/db": "*",
+    "@fsplit/redis": "*",
+    "@fsplit/utils": "*",
+    "@trpc/server": "^11.5.1",
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "ws": "^8.18.3",
+    "zod": "^4.1.11"
+  }
+}
