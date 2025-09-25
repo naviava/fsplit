@@ -40,7 +40,7 @@ export const logTypeEnum = t.pgEnum("log_type_enum", LogTypeEnum);
 export const users = t.pgTable(
   "users",
   {
-    id: t.uuid().primaryKey().defaultRandom(),
+    id: t.varchar({ length: 255 }).primaryKey(),
     email: t.varchar({ length: 255 }).unique().notNull(),
     provider: providersEnum().default("CREDENTIALS").notNull(),
     oauthId: t.varchar({ length: 100 }),
@@ -50,7 +50,7 @@ export const users = t.pgTable(
     firstName: t.varchar({ length: 255 }),
     middleName: t.varchar({ length: 255 }),
     lastName: t.varchar({ length: 255 }),
-    hashedPassword: t.varchar({ length: 255 }),
+    hashedPassword: t.varchar({ length: 255 }), //TODO: Remove this field from schema.
     image: t.text(),
     preferredCurrency: currencyCodeEnum().default("INR").notNull(),
     role: roleEnum().default("USER").notNull(),
@@ -59,27 +59,20 @@ export const users = t.pgTable(
     emailVerifiedAt: t.timestamp({ withTimezone: true }),
     ...timestamps,
   },
-  (table) => [
-    t.uniqueIndex().on(table.email),
-    t.index().on(table.disabled),
-    t.check(
-      "provider_password_oauth_check",
-      sql`((provider = 'CREDENTIALS' AND hashed_password IS NOT NULL) OR (provider != 'CREDENTIALS' AND oauth_id IS NOT NULL))`
-    ),
-  ]
+  (table) => [t.uniqueIndex().on(table.email), t.index().on(table.disabled)]
 );
 
 // Sessions table
 export const sessions = t.pgTable(
   "sessions",
   {
-    id: t.uuid().primaryKey().defaultRandom(),
+    id: t.varchar({ length: 255 }).primaryKey(),
     token: t.varchar({ length: 255 }).unique().notNull(),
     expiresAt: t.timestamp({ withTimezone: true }).notNull(),
     ipAddress: t.varchar({ length: 255 }),
     userAgent: t.text(),
     userId: t
-      .uuid()
+      .varchar({ length: 255 })
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
     ...timestamps,
@@ -91,7 +84,7 @@ export const sessions = t.pgTable(
 export const accounts = t.pgTable(
   "accounts",
   {
-    id: t.uuid().primaryKey().defaultRandom(),
+    id: t.varchar({ length: 255 }).primaryKey(),
     accountId: t.varchar({ length: 255 }).notNull(),
     providerId: t.varchar({ length: 255 }).notNull(),
     accessToken: t.text(),
@@ -102,7 +95,7 @@ export const accounts = t.pgTable(
     idToken: t.text(),
     password: t.varchar({ length: 255 }),
     userId: t
-      .uuid()
+      .varchar({ length: 255 })
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
     ...timestamps,
@@ -115,8 +108,8 @@ export const accounts = t.pgTable(
 );
 
 // Verifications table
-export const verifications = t.pgTable("verifications", {
-  id: t.uuid().primaryKey().defaultRandom(),
+export const verifications = t.pgTable("verification", {
+  id: t.varchar({ length: 255 }).primaryKey(),
   identifier: t.varchar({ length: 255 }).notNull(),
   value: t.varchar({ length: 255 }).notNull(),
   expiresAt: t.timestamp({ withTimezone: true }).notNull(),
@@ -135,7 +128,7 @@ export const confirmEmailTokens = t.pgTable(
       .$defaultFn(() => nanoid()),
     expiresAt: t.timestamp({ withTimezone: true }).notNull(),
     userId: t
-      .uuid()
+      .varchar({ length: 255 })
       .unique()
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
@@ -168,7 +161,7 @@ export const accountVerifications = t.pgTable(
   {
     id: t.serial().primaryKey(),
     userId: t
-      .uuid()
+      .varchar({ length: 255 })
       .unique()
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
@@ -183,11 +176,11 @@ export const friends = t.pgTable(
   {
     id: t.serial().primaryKey(),
     user1Id: t
-      .uuid()
+      .varchar({ length: 255 })
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
     user2Id: t
-      .uuid()
+      .varchar({ length: 255 })
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
     ...timestamps,
@@ -206,7 +199,7 @@ export const tempFriends = t.pgTable(
     email: t.varchar({ length: 255 }).notNull(),
     phone: t.varchar({ length: 255 }),
     userId: t
-      .uuid()
+      .varchar({ length: 255 })
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
     ...timestamps,
@@ -221,7 +214,7 @@ export const invitations = t.pgTable(
     id: t.serial().primaryKey(),
     email: t.varchar({ length: 255 }).unique().notNull(),
     fromId: t
-      .uuid()
+      .varchar({ length: 255 })
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
     ...timestamps,
@@ -235,11 +228,11 @@ export const friendRequests = t.pgTable(
   {
     id: t.uuid().primaryKey().defaultRandom(),
     fromId: t
-      .uuid()
+      .varchar({ length: 255 })
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
     toId: t
-      .uuid()
+      .varchar({ length: 255 })
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
     ...timestamps,
@@ -274,7 +267,9 @@ export const groupMembers = t.pgTable(
       .uuid()
       .notNull()
       .references(() => groups.id, { onDelete: "cascade" }),
-    userId: t.uuid().references(() => users.id, { onDelete: "restrict" }),
+    userId: t
+      .varchar({ length: 255 })
+      .references(() => users.id, { onDelete: "restrict" }),
     ...timestamps,
   },
   (table) => [
@@ -291,11 +286,11 @@ export const expenses = t.pgTable(
     name: t.varchar({ length: 255 }).notNull(),
     amount: t.bigint({ mode: "bigint" }).notNull(),
     createdById: t
-      .uuid()
+      .varchar({ length: 255 })
       .notNull()
       .references(() => users.id, { onDelete: "restrict" }),
     lastModifiedById: t
-      .uuid()
+      .varchar({ length: 255 })
       .notNull()
       .references(() => users.id, { onDelete: "restrict" }),
     groupId: t
@@ -366,11 +361,11 @@ export const settlements = t.pgTable(
       .notNull()
       .references(() => groups.id, { onDelete: "cascade" }),
     createdById: t
-      .uuid()
+      .varchar({ length: 255 })
       .notNull()
       .references(() => users.id, { onDelete: "restrict" }),
     lastModifiedById: t
-      .uuid()
+      .varchar({ length: 255 })
       .notNull()
       .references(() => users.id, { onDelete: "restrict" }),
     fromId: t
@@ -421,7 +416,7 @@ export const logs = t.pgTable(
     type: logTypeEnum().notNull(),
     message: t.text().notNull(),
     userId: t
-      .uuid()
+      .varchar({ length: 255 })
       .notNull()
       .references(() => users.id),
     groupId: t.uuid().references(() => groups.id, { onDelete: "cascade" }),
