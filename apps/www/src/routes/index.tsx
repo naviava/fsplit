@@ -1,12 +1,13 @@
 import { useState } from 'react'
 import { createFileRoute } from '@tanstack/react-router'
 import { authClient } from '@/lib/auth-client'
+import Env from '@/lib/env'
 
 export const Route = createFileRoute('/')({
-  component: App,
+  component: Landing,
 })
 
-function App() {
+function Landing() {
   const [registerDetails, setRegisterDetails] = useState({
     name: '',
     email: '',
@@ -58,6 +59,13 @@ function App() {
     const { data, error } = await authClient.signIn.email({
       email,
       password,
+    })
+  }
+
+  async function socialLogin(provider: 'github' | 'google') {
+    await authClient.signIn.social({
+      provider,
+      callbackURL: Env.WEB_URL,
     })
   }
 
@@ -158,11 +166,18 @@ function App() {
             <button type="submit" className="bg-white text-black">
               Sign in
             </button>
+            <button
+              type="button"
+              onClick={() => socialLogin('github')}
+              className="bg-white text-black"
+            >
+              Sign in with GitHub
+            </button>
           </form>
         </>
       ) : (
         <>
-          <h1>Sign in as {session.user.name}</h1>
+          <h1>Current user: {session.user.name}</h1>
           <button onClick={() => authClient.signOut()}>Sign out</button>
         </>
       )}

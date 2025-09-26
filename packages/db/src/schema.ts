@@ -5,7 +5,6 @@ import { nanoid } from "nanoid";
 
 import {
   CurrencyCodeEnum,
-  ProvidersEnum,
   GroupRoleEnum,
   GroupTypeEnum,
   LogTypeEnum,
@@ -19,8 +18,6 @@ import { timestamps } from "./constants";
  * Enums
  *
  */
-
-export const providersEnum = t.pgEnum("providers_enum", ProvidersEnum);
 export const currencyCodeEnum = t.pgEnum(
   "currency_code_enum",
   CurrencyCodeEnum
@@ -40,17 +37,14 @@ export const logTypeEnum = t.pgEnum("log_type_enum", LogTypeEnum);
 export const users = t.pgTable(
   "users",
   {
-    id: t.varchar({ length: 255 }).primaryKey(),
+    id: t.varchar({ length: 40 }).primaryKey(),
     email: t.varchar({ length: 255 }).unique().notNull(),
-    provider: providersEnum().default("CREDENTIALS").notNull(),
-    oauthId: t.varchar({ length: 100 }),
     phone: t.varchar({ length: 255 }),
     isMerged: t.boolean().default(false).notNull(),
     name: t.varchar({ length: 255 }).notNull(),
-    firstName: t.varchar({ length: 255 }),
-    middleName: t.varchar({ length: 255 }),
-    lastName: t.varchar({ length: 255 }),
-    hashedPassword: t.varchar({ length: 255 }), //TODO: Remove this field from schema.
+    firstName: t.varchar({ length: 85 }),
+    middleName: t.varchar({ length: 85 }),
+    lastName: t.varchar({ length: 85 }),
     image: t.text(),
     preferredCurrency: currencyCodeEnum().default("INR").notNull(),
     role: roleEnum().default("USER").notNull(),
@@ -66,13 +60,13 @@ export const users = t.pgTable(
 export const sessions = t.pgTable(
   "sessions",
   {
-    id: t.varchar({ length: 255 }).primaryKey(),
+    id: t.varchar({ length: 40 }).primaryKey(),
     token: t.varchar({ length: 255 }).unique().notNull(),
     expiresAt: t.timestamp({ withTimezone: true }).notNull(),
     ipAddress: t.varchar({ length: 255 }),
     userAgent: t.text(),
     userId: t
-      .varchar({ length: 255 })
+      .varchar({ length: 40 })
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
     ...timestamps,
@@ -84,7 +78,7 @@ export const sessions = t.pgTable(
 export const accounts = t.pgTable(
   "accounts",
   {
-    id: t.varchar({ length: 255 }).primaryKey(),
+    id: t.varchar({ length: 40 }).primaryKey(),
     accountId: t.varchar({ length: 255 }).notNull(),
     providerId: t.varchar({ length: 255 }).notNull(),
     accessToken: t.text(),
@@ -95,7 +89,7 @@ export const accounts = t.pgTable(
     idToken: t.text(),
     password: t.varchar({ length: 255 }),
     userId: t
-      .varchar({ length: 255 })
+      .varchar({ length: 40 })
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
     ...timestamps,
@@ -109,7 +103,7 @@ export const accounts = t.pgTable(
 
 // Verifications table
 export const verifications = t.pgTable("verification", {
-  id: t.varchar({ length: 255 }).primaryKey(),
+  id: t.varchar({ length: 40 }).primaryKey(),
   identifier: t.varchar({ length: 255 }).notNull(),
   value: t.varchar({ length: 255 }).notNull(),
   expiresAt: t.timestamp({ withTimezone: true }).notNull(),
@@ -128,7 +122,7 @@ export const confirmEmailTokens = t.pgTable(
       .$defaultFn(() => nanoid()),
     expiresAt: t.timestamp({ withTimezone: true }).notNull(),
     userId: t
-      .varchar({ length: 255 })
+      .varchar({ length: 40 })
       .unique()
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
@@ -137,7 +131,7 @@ export const confirmEmailTokens = t.pgTable(
   (table) => [t.uniqueIndex().on(table.token), t.index().on(table.expiresAt)]
 );
 
-// PasswordResetTokens table
+// Password Reset Tokens table
 export const passwordResetTokens = t.pgTable(
   "password_reset_tokens",
   {
@@ -155,13 +149,13 @@ export const passwordResetTokens = t.pgTable(
   (table) => [t.uniqueIndex().on(table.token), t.index().on(table.expiresAt)]
 );
 
-// AccountVerifications table
+// Account Verifications table
 export const accountVerifications = t.pgTable(
   "account_verifications",
   {
     id: t.serial().primaryKey(),
     userId: t
-      .varchar({ length: 255 })
+      .varchar({ length: 40 })
       .unique()
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
@@ -176,11 +170,11 @@ export const friends = t.pgTable(
   {
     id: t.serial().primaryKey(),
     user1Id: t
-      .varchar({ length: 255 })
+      .varchar({ length: 40 })
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
     user2Id: t
-      .varchar({ length: 255 })
+      .varchar({ length: 40 })
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
     ...timestamps,
@@ -190,7 +184,7 @@ export const friends = t.pgTable(
   ]
 );
 
-// TempFriends table
+// Temp Friends table
 export const tempFriends = t.pgTable(
   "temp_friends",
   {
@@ -199,7 +193,7 @@ export const tempFriends = t.pgTable(
     email: t.varchar({ length: 255 }).notNull(),
     phone: t.varchar({ length: 255 }),
     userId: t
-      .varchar({ length: 255 })
+      .varchar({ length: 40 })
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
     ...timestamps,
@@ -214,7 +208,7 @@ export const invitations = t.pgTable(
     id: t.serial().primaryKey(),
     email: t.varchar({ length: 255 }).unique().notNull(),
     fromId: t
-      .varchar({ length: 255 })
+      .varchar({ length: 40 })
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
     ...timestamps,
@@ -222,17 +216,17 @@ export const invitations = t.pgTable(
   (table) => [t.uniqueIndex().on(table.email)]
 );
 
-// FriendRequests table
+// Friend Requests table
 export const friendRequests = t.pgTable(
   "friend_requests",
   {
     id: t.uuid().primaryKey().defaultRandom(),
     fromId: t
-      .varchar({ length: 255 })
+      .varchar({ length: 40 })
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
     toId: t
-      .varchar({ length: 255 })
+      .varchar({ length: 40 })
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
     ...timestamps,
@@ -254,7 +248,7 @@ export const groups = t.pgTable("groups", {
   ...timestamps,
 });
 
-// GroupMembers table
+// Group Members table
 export const groupMembers = t.pgTable(
   "group_members",
   {
@@ -268,7 +262,7 @@ export const groupMembers = t.pgTable(
       .notNull()
       .references(() => groups.id, { onDelete: "cascade" }),
     userId: t
-      .varchar({ length: 255 })
+      .varchar({ length: 40 })
       .references(() => users.id, { onDelete: "restrict" }),
     ...timestamps,
   },
@@ -286,11 +280,11 @@ export const expenses = t.pgTable(
     name: t.varchar({ length: 255 }).notNull(),
     amount: t.bigint({ mode: "bigint" }).notNull(),
     createdById: t
-      .varchar({ length: 255 })
+      .varchar({ length: 40 })
       .notNull()
       .references(() => users.id, { onDelete: "restrict" }),
     lastModifiedById: t
-      .varchar({ length: 255 })
+      .varchar({ length: 40 })
       .notNull()
       .references(() => users.id, { onDelete: "restrict" }),
     groupId: t
@@ -361,11 +355,11 @@ export const settlements = t.pgTable(
       .notNull()
       .references(() => groups.id, { onDelete: "cascade" }),
     createdById: t
-      .varchar({ length: 255 })
+      .varchar({ length: 40 })
       .notNull()
       .references(() => users.id, { onDelete: "restrict" }),
     lastModifiedById: t
-      .varchar({ length: 255 })
+      .varchar({ length: 40 })
       .notNull()
       .references(() => users.id, { onDelete: "restrict" }),
     fromId: t
@@ -416,7 +410,7 @@ export const logs = t.pgTable(
     type: logTypeEnum().notNull(),
     message: t.text().notNull(),
     userId: t
-      .varchar({ length: 255 })
+      .varchar({ length: 40 })
       .notNull()
       .references(() => users.id),
     groupId: t.uuid().references(() => groups.id, { onDelete: "cascade" }),

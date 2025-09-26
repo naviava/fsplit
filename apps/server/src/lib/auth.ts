@@ -20,8 +20,17 @@ export const auth = betterAuth({
   account: { modelName: "accounts" },
   verification: { modelName: "verifications" },
   trustedOrigins: [Env.WEB_URL as string],
+
+  // Allowed methods.
   emailAndPassword: {
     enabled: true,
     autoSignIn: false,
+  },
+  socialProviders: {
+    github: {
+      clientId: Env.GITHUB_CLIENT_ID,
+      clientSecret: Env.GITHUB_CLIENT_SECRET,
+      prompt: "consent",
+    },
   },
 });

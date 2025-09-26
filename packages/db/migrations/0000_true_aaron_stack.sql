@@ -2,18 +2,17 @@ CREATE TYPE "public"."currency_code_enum" AS ENUM('INR', 'USD', 'GBP', 'EUR', 'J
 CREATE TYPE "public"."group_role_enum" AS ENUM('MANAGER', 'MEMBER');--> statement-breakpoint
 CREATE TYPE "public"."group_type_enum" AS ENUM('TRIP', 'HOME', 'COUPLE', 'OTHER');--> statement-breakpoint
 CREATE TYPE "public"."log_type_enum" AS ENUM('USER', 'GROUP', 'EXPENSE', 'SETTLEMENT', 'FRIEND_REQUEST');--> statement-breakpoint
-CREATE TYPE "public"."providers_enum" AS ENUM('CREDENTIALS', 'GOOGLE', 'GITHUB');--> statement-breakpoint
 CREATE TYPE "public"."role_enum" AS ENUM('USER', 'ADMIN');--> statement-breakpoint
 CREATE TABLE "account_verifications" (
 	"id" serial PRIMARY KEY NOT NULL,
-	"user_id" varchar(255) NOT NULL,
+	"user_id" varchar(40) NOT NULL,
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
 	"updated_at" timestamp with time zone DEFAULT now() NOT NULL,
 	CONSTRAINT "account_verifications_userId_unique" UNIQUE("user_id")
 );
 --> statement-breakpoint
 CREATE TABLE "accounts" (
-	"id" varchar(255) PRIMARY KEY NOT NULL,
+	"id" varchar(40) PRIMARY KEY NOT NULL,
 	"account_id" varchar(255) NOT NULL,
 	"provider_id" varchar(255) NOT NULL,
 	"access_token" text,
@@ -23,7 +22,7 @@ CREATE TABLE "accounts" (
 	"scope" text,
 	"id_token" text,
 	"password" varchar(255),
-	"user_id" varchar(255) NOT NULL,
+	"user_id" varchar(40) NOT NULL,
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
 	"updated_at" timestamp with time zone DEFAULT now() NOT NULL,
 	CONSTRAINT "provider_id_account_id_unique" UNIQUE("provider_id","account_id")
@@ -33,7 +32,7 @@ CREATE TABLE "confirm_email_tokens" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"token" varchar(25) NOT NULL,
 	"expires_at" timestamp with time zone NOT NULL,
-	"user_id" varchar(255) NOT NULL,
+	"user_id" varchar(40) NOT NULL,
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
 	"updated_at" timestamp with time zone DEFAULT now() NOT NULL,
 	CONSTRAINT "confirm_email_tokens_token_unique" UNIQUE("token"),
@@ -72,8 +71,8 @@ CREATE TABLE "expenses" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"name" varchar(255) NOT NULL,
 	"amount" bigint NOT NULL,
-	"created_by_id" varchar(255) NOT NULL,
-	"last_modified_by_id" varchar(255) NOT NULL,
+	"created_by_id" varchar(40) NOT NULL,
+	"last_modified_by_id" varchar(40) NOT NULL,
 	"group_id" uuid NOT NULL,
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
 	"updated_at" timestamp with time zone DEFAULT now() NOT NULL
@@ -81,8 +80,8 @@ CREATE TABLE "expenses" (
 --> statement-breakpoint
 CREATE TABLE "friend_requests" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
-	"from_id" varchar(255) NOT NULL,
-	"to_id" varchar(255) NOT NULL,
+	"from_id" varchar(40) NOT NULL,
+	"to_id" varchar(40) NOT NULL,
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
 	"updated_at" timestamp with time zone DEFAULT now() NOT NULL,
 	CONSTRAINT "distinct_users" CHECK ("friend_requests"."from_id" <> "friend_requests"."to_id")
@@ -90,8 +89,8 @@ CREATE TABLE "friend_requests" (
 --> statement-breakpoint
 CREATE TABLE "friends" (
 	"id" serial PRIMARY KEY NOT NULL,
-	"user1_id" varchar(255) NOT NULL,
-	"user2_id" varchar(255) NOT NULL,
+	"user1_id" varchar(40) NOT NULL,
+	"user2_id" varchar(40) NOT NULL,
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
 	"updated_at" timestamp with time zone DEFAULT now() NOT NULL,
 	CONSTRAINT "user1_id_user2_id_unique" UNIQUE("user1_id","user2_id")
@@ -104,7 +103,7 @@ CREATE TABLE "group_members" (
 	"role" "group_role_enum" DEFAULT 'MEMBER' NOT NULL,
 	"is_deleted" boolean DEFAULT false NOT NULL,
 	"group_id" uuid NOT NULL,
-	"user_id" varchar(255),
+	"user_id" varchar(40),
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
 	"updated_at" timestamp with time zone DEFAULT now() NOT NULL
 );
@@ -123,7 +122,7 @@ CREATE TABLE "groups" (
 CREATE TABLE "invitations" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"email" varchar(255) NOT NULL,
-	"from_id" varchar(255) NOT NULL,
+	"from_id" varchar(40) NOT NULL,
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
 	"updated_at" timestamp with time zone DEFAULT now() NOT NULL,
 	CONSTRAINT "invitations_email_unique" UNIQUE("email")
@@ -133,7 +132,7 @@ CREATE TABLE "logs" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"type" "log_type_enum" NOT NULL,
 	"message" text NOT NULL,
-	"user_id" varchar(255) NOT NULL,
+	"user_id" varchar(40) NOT NULL,
 	"group_id" uuid,
 	"expense_id" uuid,
 	"settlement_id" uuid,
@@ -168,12 +167,12 @@ CREATE TABLE "password_reset_tokens" (
 );
 --> statement-breakpoint
 CREATE TABLE "sessions" (
-	"id" varchar(255) PRIMARY KEY NOT NULL,
+	"id" varchar(40) PRIMARY KEY NOT NULL,
 	"token" varchar(255) NOT NULL,
 	"expires_at" timestamp with time zone NOT NULL,
 	"ip_address" varchar(255),
 	"user_agent" text,
-	"user_id" varchar(255) NOT NULL,
+	"user_id" varchar(40) NOT NULL,
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
 	"updated_at" timestamp with time zone DEFAULT now() NOT NULL,
 	CONSTRAINT "sessions_token_unique" UNIQUE("token")
@@ -183,8 +182,8 @@ CREATE TABLE "settlements" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"amount" bigint NOT NULL,
 	"group_id" uuid NOT NULL,
-	"created_by_id" varchar(255) NOT NULL,
-	"last_modified_by_id" varchar(255) NOT NULL,
+	"created_by_id" varchar(40) NOT NULL,
+	"last_modified_by_id" varchar(40) NOT NULL,
 	"from_id" uuid NOT NULL,
 	"to_id" uuid NOT NULL,
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
@@ -206,24 +205,21 @@ CREATE TABLE "temp_friends" (
 	"name" varchar(255) NOT NULL,
 	"email" varchar(255) NOT NULL,
 	"phone" varchar(255),
-	"user_id" varchar(255) NOT NULL,
+	"user_id" varchar(40) NOT NULL,
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
 	"updated_at" timestamp with time zone DEFAULT now() NOT NULL,
 	CONSTRAINT "user_id_email_unique" UNIQUE("user_id","email")
 );
 --> statement-breakpoint
 CREATE TABLE "users" (
-	"id" varchar(255) PRIMARY KEY NOT NULL,
+	"id" varchar(40) PRIMARY KEY NOT NULL,
 	"email" varchar(255) NOT NULL,
-	"provider" "providers_enum" DEFAULT 'CREDENTIALS' NOT NULL,
-	"oauth_id" varchar(100),
 	"phone" varchar(255),
 	"is_merged" boolean DEFAULT false NOT NULL,
 	"name" varchar(255) NOT NULL,
-	"first_name" varchar(255),
-	"middle_name" varchar(255),
-	"last_name" varchar(255),
-	"hashed_password" varchar(255),
+	"first_name" varchar(85),
+	"middle_name" varchar(85),
+	"last_name" varchar(85),
 	"image" text,
 	"preferred_currency" "currency_code_enum" DEFAULT 'INR' NOT NULL,
 	"role" "role_enum" DEFAULT 'USER' NOT NULL,
@@ -236,7 +232,7 @@ CREATE TABLE "users" (
 );
 --> statement-breakpoint
 CREATE TABLE "verification" (
-	"id" varchar(255) PRIMARY KEY NOT NULL,
+	"id" varchar(40) PRIMARY KEY NOT NULL,
 	"identifier" varchar(255) NOT NULL,
 	"value" varchar(255) NOT NULL,
 	"expires_at" timestamp with time zone NOT NULL,

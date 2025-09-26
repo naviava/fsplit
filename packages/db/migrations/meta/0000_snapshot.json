@@ -1,5 +1,5 @@
 {
-  "id": "fb40194e-cdcf-4e30-9b17-83b253833718",
+  "id": "eb424e12-6769-4fa4-bc3d-9d69b5b0a6fb",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -16,7 +16,7 @@
         },
         "user_id": {
           "name": "user_id",
-          "type": "varchar(255)",
+          "type": "varchar(40)",
           "primaryKey": false,
           "notNull": true
         },
@@ -87,7 +87,7 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "varchar(255)",
+          "type": "varchar(40)",
           "primaryKey": true,
           "notNull": true
         },
@@ -147,7 +147,7 @@
         },
         "user_id": {
           "name": "user_id",
-          "type": "varchar(255)",
+          "type": "varchar(40)",
           "primaryKey": false,
           "notNull": true
         },
@@ -221,7 +221,7 @@
         },
         "user_id": {
           "name": "user_id",
-          "type": "varchar(255)",
+          "type": "varchar(40)",
           "primaryKey": false,
           "notNull": true
         },
@@ -585,13 +585,13 @@
         },
         "created_by_id": {
           "name": "created_by_id",
-          "type": "varchar(255)",
+          "type": "varchar(40)",
           "primaryKey": false,
           "notNull": true
         },
         "last_modified_by_id": {
           "name": "last_modified_by_id",
-          "type": "varchar(255)",
+          "type": "varchar(40)",
           "primaryKey": false,
           "notNull": true
         },
@@ -693,13 +693,13 @@
         },
         "from_id": {
           "name": "from_id",
-          "type": "varchar(255)",
+          "type": "varchar(40)",
           "primaryKey": false,
           "notNull": true
         },
         "to_id": {
           "name": "to_id",
-          "type": "varchar(255)",
+          "type": "varchar(40)",
           "primaryKey": false,
           "notNull": true
         },
@@ -792,13 +792,13 @@
         },
         "user1_id": {
           "name": "user1_id",
-          "type": "varchar(255)",
+          "type": "varchar(40)",
           "primaryKey": false,
           "notNull": true
         },
         "user2_id": {
           "name": "user2_id",
-          "type": "varchar(255)",
+          "type": "varchar(40)",
           "primaryKey": false,
           "notNull": true
         },
@@ -907,7 +907,7 @@
         },
         "user_id": {
           "name": "user_id",
-          "type": "varchar(255)",
+          "type": "varchar(40)",
           "primaryKey": false,
           "notNull": false
         },
@@ -1083,7 +1083,7 @@
         },
         "from_id": {
           "name": "from_id",
-          "type": "varchar(255)",
+          "type": "varchar(40)",
           "primaryKey": false,
           "notNull": true
         },
@@ -1174,7 +1174,7 @@
         },
         "user_id": {
           "name": "user_id",
-          "type": "varchar(255)",
+          "type": "varchar(40)",
           "primaryKey": false,
           "notNull": true
         },
@@ -1426,7 +1426,7 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "varchar(255)",
+          "type": "varchar(40)",
           "primaryKey": true,
           "notNull": true
         },
@@ -1456,7 +1456,7 @@
         },
         "user_id": {
           "name": "user_id",
-          "type": "varchar(255)",
+          "type": "varchar(40)",
           "primaryKey": false,
           "notNull": true
         },
@@ -1546,13 +1546,13 @@
         },
         "created_by_id": {
           "name": "created_by_id",
-          "type": "varchar(255)",
+          "type": "varchar(40)",
           "primaryKey": false,
           "notNull": true
         },
         "last_modified_by_id": {
           "name": "last_modified_by_id",
-          "type": "varchar(255)",
+          "type": "varchar(40)",
           "primaryKey": false,
           "notNull": true
         },
@@ -1847,7 +1847,7 @@
         },
         "user_id": {
           "name": "user_id",
-          "type": "varchar(255)",
+          "type": "varchar(40)",
           "primaryKey": false,
           "notNull": true
         },
@@ -1903,7 +1903,7 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "varchar(255)",
+          "type": "varchar(40)",
           "primaryKey": true,
           "notNull": true
         },
@@ -1912,20 +1912,6 @@
           "type": "varchar(255)",
           "primaryKey": false,
           "notNull": true
-        },
-        "provider": {
-          "name": "provider",
-          "type": "providers_enum",
-          "typeSchema": "public",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "'CREDENTIALS'"
-        },
-        "oauth_id": {
-          "name": "oauth_id",
-          "type": "varchar(100)",
-          "primaryKey": false,
-          "notNull": false
         },
         "phone": {
           "name": "phone",
@@ -1948,25 +1934,19 @@
         },
         "first_name": {
           "name": "first_name",
-          "type": "varchar(255)",
+          "type": "varchar(85)",
           "primaryKey": false,
           "notNull": false
         },
         "middle_name": {
           "name": "middle_name",
-          "type": "varchar(255)",
+          "type": "varchar(85)",
           "primaryKey": false,
           "notNull": false
         },
         "last_name": {
           "name": "last_name",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "hashed_password": {
-          "name": "hashed_password",
-          "type": "varchar(255)",
+          "type": "varchar(85)",
           "primaryKey": false,
           "notNull": false
         },
@@ -2080,7 +2060,7 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "varchar(255)",
+          "type": "varchar(40)",
           "primaryKey": true,
           "notNull": true
         },
@@ -2166,15 +2146,6 @@
         "EXPENSE",
         "SETTLEMENT",
         "FRIEND_REQUEST"
-      ]
-    },
-    "public.providers_enum": {
-      "name": "providers_enum",
-      "schema": "public",
-      "values": [
-        "CREDENTIALS",
-        "GOOGLE",
-        "GITHUB"
       ]
     },
     "public.role_enum": {
