@@ -1,8 +1,11 @@
 {
-  "name": "server",
+  "name": "@fsplit/server",
   "module": "./src/index.ts",
   "type": "module",
   "private": true,
+  "exports": {
+    "./trpc": "./src/routes.ts"
+  },
   "scripts": {
     "start": "bun ./src/index.ts",
     "dev": "bun --watch ./src/index.ts"

@@ -1,13 +1,19 @@
 import { useState } from 'react'
 import { createFileRoute } from '@tanstack/react-router'
+import { useQuery } from '@tanstack/react-query'
 import { authClient } from '@/lib/auth-client'
 import Env from '@/lib/env'
+import { useTRPC } from '@/lib/trpc'
 
 export const Route = createFileRoute('/')({
   component: Landing,
 })
 
 function Landing() {
+  const trpc = useTRPC()
+  const { data } = useQuery(trpc.hello.queryOptions())
+  console.log(data)
+
   const [registerDetails, setRegisterDetails] = useState({
     name: '',
     email: '',
