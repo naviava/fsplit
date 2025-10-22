@@ -12,10 +12,12 @@
   --font-archivo: 'Archivo', sans-serif;
   --font-quote: 'Tangerine', cursive;
   --font-logo: 'Tac One', sans-serif;
+  --color-cta: #11998e;
+  --color-cta-secondary: #186e60;
 }
 
 body {
-  @apply m-0 bg-black text-white h-full flex flex-col font-tfont;
+  @apply m-0 bg-neutral-200 text-neutral-700 antialiased h-full font-tfont;
   font-family:
     'Roboto',
     -apple-system,
