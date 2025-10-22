@@ -18,6 +18,7 @@
   "dependencies": {
     "@fsplit/db": "*",
     "@fsplit/redis": "*",
-    "@trpc/server": "^11.5.1"
+    "@trpc/server": "^11.5.1",
+    "nanoid": "^5.1.6"
   }
 }

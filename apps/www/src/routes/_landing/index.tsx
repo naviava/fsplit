@@ -1,16 +1,17 @@
 import { useState } from 'react'
 import { createFileRoute } from '@tanstack/react-router'
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { authClient } from '@/lib/auth-client'
 import Env from '@/lib/env'
 import { useTRPC } from '@/lib/trpc'
 
-export const Route = createFileRoute('/')({
+export const Route = createFileRoute('/_landing/')({
   component: Landing,
 })
 
 function Landing() {
   const trpc = useTRPC()
+  const queryClient = useQueryClient()
   const { data } = useQuery(trpc.hello.queryOptions())
   console.log(data)
 
@@ -184,7 +185,14 @@ function Landing() {
       ) : (
         <>
           <h1>Current user: {session.user.name}</h1>
-          <button onClick={() => authClient.signOut()}>Sign out</button>
+          <button
+            onClick={async () => {
+              await authClient.signOut()
+              queryClient.invalidateQueries()
+            }}
+          >
+            Sign out
+          </button>
         </>
       )}
     </main>
