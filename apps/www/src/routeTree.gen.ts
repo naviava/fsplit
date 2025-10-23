@@ -9,12 +9,18 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SigninRouteImport } from './routes/signin'
 import { Route as LandingRouteImport } from './routes/_landing'
 import { Route as LandingIndexRouteImport } from './routes/_landing/index'
 import { Route as LandingTermsRouteImport } from './routes/_landing/terms'
 import { Route as LandingPrivacyPolicyRouteImport } from './routes/_landing/privacy-policy'
 import { Route as LandingContactRouteImport } from './routes/_landing/contact'
 
+const SigninRoute = SigninRouteImport.update({
+  id: '/signin',
+  path: '/signin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LandingRoute = LandingRouteImport.update({
   id: '/_landing',
   getParentRoute: () => rootRouteImport,
@@ -41,12 +47,14 @@ const LandingContactRoute = LandingContactRouteImport.update({
 } as any)
 
 export interface FileRoutesByFullPath {
+  '/signin': typeof SigninRoute
   '/contact': typeof LandingContactRoute
   '/privacy-policy': typeof LandingPrivacyPolicyRoute
   '/terms': typeof LandingTermsRoute
   '/': typeof LandingIndexRoute
 }
 export interface FileRoutesByTo {
+  '/signin': typeof SigninRoute
   '/contact': typeof LandingContactRoute
   '/privacy-policy': typeof LandingPrivacyPolicyRoute
   '/terms': typeof LandingTermsRoute
@@ -55,6 +63,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_landing': typeof LandingRouteWithChildren
+  '/signin': typeof SigninRoute
   '/_landing/contact': typeof LandingContactRoute
   '/_landing/privacy-policy': typeof LandingPrivacyPolicyRoute
   '/_landing/terms': typeof LandingTermsRoute
@@ -62,12 +71,13 @@ export interface FileRoutesById {
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/contact' | '/privacy-policy' | '/terms' | '/'
+  fullPaths: '/signin' | '/contact' | '/privacy-policy' | '/terms' | '/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/contact' | '/privacy-policy' | '/terms' | '/'
+  to: '/signin' | '/contact' | '/privacy-policy' | '/terms' | '/'
   id:
     | '__root__'
     | '/_landing'
+    | '/signin'
     | '/_landing/contact'
     | '/_landing/privacy-policy'
     | '/_landing/terms'
@@ -76,10 +86,18 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   LandingRoute: typeof LandingRouteWithChildren
+  SigninRoute: typeof SigninRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/signin': {
+      id: '/signin'
+      path: '/signin'
+      fullPath: '/signin'
+      preLoaderRoute: typeof SigninRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_landing': {
       id: '/_landing'
       path: ''
@@ -137,6 +155,7 @@ const LandingRouteWithChildren =
 
 const rootRouteChildren: RootRouteChildren = {
   LandingRoute: LandingRouteWithChildren,
+  SigninRoute: SigninRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
