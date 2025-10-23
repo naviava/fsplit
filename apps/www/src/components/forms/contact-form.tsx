@@ -1,10 +1,9 @@
-import { useCallback } from 'react'
+import { useCallback, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { z } from 'zod'
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
-import { toast } from '../ui/use-toast'
 import {
   Form,
   FormControl,
@@ -17,19 +16,8 @@ import { Input } from '../ui/input'
 import { Textarea } from '../ui/textarea'
 import { Button } from '../ui/button'
 import { Loader } from 'lucide-react'
-import { useRouter } from '@tanstack/react-router'
-
-const formSchema = z.object({
-  fullName: z
-    .string()
-    .min(1, { message: 'Cannot be empty' })
-    .max(50, { message: 'Too long' }),
-  email: z.string().email({ message: 'Invalid email address' }),
-  message: z
-    .string()
-    .min(10, { message: 'Too short' })
-    .max(5000, { message: 'Too long' }),
-})
+import { contactUsSchema } from '@fsplit/types/zod'
+import { useContactForm } from '@/hooks/tsrq/use-misc'
 
 export function FormHeader() {
   return (
@@ -45,9 +33,9 @@ export function FormHeader() {
 }
 
 export function ContactForm() {
-  const router = useRouter()
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const { newEntryMutation } = useContactForm()
+  const form = useForm<z.infer<typeof contactUsSchema>>({
+    resolver: zodResolver(contactUsSchema),
     defaultValues: {
       fullName: '',
       email: '',
@@ -55,31 +43,18 @@ export function ContactForm() {
     },
   })
 
-  // TODO: Add backend integration.
-  const contactUsMutation = trpc.misc.contactUs.useMutation({
-    onError: ({ message }) =>
-      toast({
-        title: 'Something went wrong',
-        description: message,
-      }),
-    onSuccess: ({ toastTitle, toastDescription }) => {
-      form.reset()
-      toast({
-        title: toastTitle,
-        description: toastDescription,
-      })
-      router.navigate({ to: '/' })
-      router.invalidate()
-    },
-  })
-
-  // TODO: Handle submission.
   const onSubmit = useCallback(
-    (values: z.infer<typeof formSchema>) => {
-      contactUsMutation.mutate(values)
+    (values: z.infer<typeof contactUsSchema>) => {
+      newEntryMutation.mutate(values)
     },
-    [contactUsMutation],
+    [newEntryMutation],
   )
+
+  useEffect(() => {
+    if (newEntryMutation.isSuccess) {
+      form.reset()
+    }
+  }, [newEntryMutation.isSuccess, form])
 
   return (
     <>
@@ -108,7 +83,7 @@ export function ContactForm() {
                 <FormControl>
                   <Input
                     placeholder="What's your full name?"
-                    disabled={contactUsMutation.isPending}
+                    disabled={newEntryMutation.isPending}
                     {...field}
                     className="placeholder:text-neutral-400 lg:text-base"
                   />
@@ -131,7 +106,7 @@ export function ContactForm() {
                   <Input
                     type="email"
                     placeholder="yourname@example.com"
-                    disabled={contactUsMutation.isPending}
+                    disabled={newEntryMutation.isPending}
                     {...field}
                     className="placeholder:text-neutral-400 lg:text-base"
                   />
@@ -152,7 +127,7 @@ export function ContactForm() {
                 </div>
                 <FormControl>
                   <Textarea
-                    disabled={contactUsMutation.isPending}
+                    disabled={newEntryMutation.isPending}
                     placeholder="Write your message here..."
                     {...field}
                     className="h-[10rem] resize-none placeholder:text-neutral-400 lg:text-base"
@@ -165,10 +140,10 @@ export function ContactForm() {
             type="submit"
             size="lg"
             variant="cta"
-            disabled={contactUsMutation.isPending}
+            disabled={newEntryMutation.isPending}
             className="w-full tracking-wide lg:text-lg"
           >
-            {contactUsMutation.isPending ? (
+            {newEntryMutation.isPending ? (
               <Loader className="h-5 w-5 animate-spin md:h-6 lg:w-6" />
             ) : (
               'Submit'
