@@ -11,6 +11,9 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as LandingRouteImport } from './routes/_landing'
 import { Route as LandingIndexRouteImport } from './routes/_landing/index'
+import { Route as LandingTermsRouteImport } from './routes/_landing/terms'
+import { Route as LandingPrivacyPolicyRouteImport } from './routes/_landing/privacy-policy'
+import { Route as LandingContactRouteImport } from './routes/_landing/contact'
 
 const LandingRoute = LandingRouteImport.update({
   id: '/_landing',
@@ -21,24 +24,54 @@ const LandingIndexRoute = LandingIndexRouteImport.update({
   path: '/',
   getParentRoute: () => LandingRoute,
 } as any)
+const LandingTermsRoute = LandingTermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
+  getParentRoute: () => LandingRoute,
+} as any)
+const LandingPrivacyPolicyRoute = LandingPrivacyPolicyRouteImport.update({
+  id: '/privacy-policy',
+  path: '/privacy-policy',
+  getParentRoute: () => LandingRoute,
+} as any)
+const LandingContactRoute = LandingContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => LandingRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
+  '/contact': typeof LandingContactRoute
+  '/privacy-policy': typeof LandingPrivacyPolicyRoute
+  '/terms': typeof LandingTermsRoute
   '/': typeof LandingIndexRoute
 }
 export interface FileRoutesByTo {
+  '/contact': typeof LandingContactRoute
+  '/privacy-policy': typeof LandingPrivacyPolicyRoute
+  '/terms': typeof LandingTermsRoute
   '/': typeof LandingIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_landing': typeof LandingRouteWithChildren
+  '/_landing/contact': typeof LandingContactRoute
+  '/_landing/privacy-policy': typeof LandingPrivacyPolicyRoute
+  '/_landing/terms': typeof LandingTermsRoute
   '/_landing/': typeof LandingIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/contact' | '/privacy-policy' | '/terms' | '/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/_landing' | '/_landing/'
+  to: '/contact' | '/privacy-policy' | '/terms' | '/'
+  id:
+    | '__root__'
+    | '/_landing'
+    | '/_landing/contact'
+    | '/_landing/privacy-policy'
+    | '/_landing/terms'
+    | '/_landing/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -61,14 +94,41 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LandingIndexRouteImport
       parentRoute: typeof LandingRoute
     }
+    '/_landing/terms': {
+      id: '/_landing/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof LandingTermsRouteImport
+      parentRoute: typeof LandingRoute
+    }
+    '/_landing/privacy-policy': {
+      id: '/_landing/privacy-policy'
+      path: '/privacy-policy'
+      fullPath: '/privacy-policy'
+      preLoaderRoute: typeof LandingPrivacyPolicyRouteImport
+      parentRoute: typeof LandingRoute
+    }
+    '/_landing/contact': {
+      id: '/_landing/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof LandingContactRouteImport
+      parentRoute: typeof LandingRoute
+    }
   }
 }
 
 interface LandingRouteChildren {
+  LandingContactRoute: typeof LandingContactRoute
+  LandingPrivacyPolicyRoute: typeof LandingPrivacyPolicyRoute
+  LandingTermsRoute: typeof LandingTermsRoute
   LandingIndexRoute: typeof LandingIndexRoute
 }
 
 const LandingRouteChildren: LandingRouteChildren = {
+  LandingContactRoute: LandingContactRoute,
+  LandingPrivacyPolicyRoute: LandingPrivacyPolicyRoute,
+  LandingTermsRoute: LandingTermsRoute,
   LandingIndexRoute: LandingIndexRoute,
 }
 

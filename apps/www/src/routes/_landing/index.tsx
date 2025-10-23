@@ -6,10 +6,10 @@ import Env from '@/lib/env'
 import { useTRPC } from '@/lib/trpc'
 
 export const Route = createFileRoute('/_landing/')({
-  component: Landing,
+  component: LandingPage,
 })
 
-function Landing() {
+function LandingPage() {
   const trpc = useTRPC()
   const queryClient = useQueryClient()
   const { data } = useQuery(trpc.hello.queryOptions())
