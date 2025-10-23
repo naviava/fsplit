@@ -1,69 +1,69 @@
-import { create } from "zustand";
-import { TCurrencyCode } from "@fondingo/db-split";
+import { create } from 'zustand'
+import { type TCurrencyCode } from '@fsplit/types'
 
 type ExpenseDetails = {
-  groupId: string;
+  groupId: string
 
-  currency: TCurrencyCode;
-  setCurrency: (currency: TCurrencyCode) => void;
+  currency: TCurrencyCode
+  setCurrency: (currency: TCurrencyCode) => void
 
-  expenseName: string;
-  setExpenseName: (expenseName: string) => void;
+  expenseName: string
+  setExpenseName: (expenseName: string) => void
 
-  expenseAmount: number;
-  setExpenseAmount: (expenseAmount: number) => void;
+  expenseAmount: number
+  setExpenseAmount: (expenseAmount: number) => void
 
   payments: {
-    userId: string;
-    userName: string;
-    amount: number;
-  }[];
+    userId: string
+    userName: string
+    amount: number
+  }[]
   setPayments: (
     payments: {
-      userId: string;
-      userName: string;
-      amount: number;
+      userId: string
+      userName: string
+      amount: number
     }[],
-  ) => void;
-  clearPayments: () => void;
+  ) => void
+  clearPayments: () => void
 
-  splitType: "equally" | "custom";
-  setSplitType: (splitType: "equally" | "custom") => void;
+  splitType: 'equally' | 'custom'
+  setSplitType: (splitType: 'equally' | 'custom') => void
 
   splits: {
-    userId: string;
-    userName: string;
-    amount: number;
-  }[];
+    userId: string
+    userName: string
+    amount: number
+  }[]
   setSplits: (
     splits: {
-      userId: string;
-      userName: string;
-      amount: number;
+      userId: string
+      userName: string
+      amount: number
     }[],
-  ) => void;
-  clearSplits: () => void;
+  ) => void
+  clearSplits: () => void
 
-  breakPoint: number;
+  breakPoint: number
 
-  isPaymentsDrawerOpen: boolean;
-  onPaymentsDrawerOpen: (groupId: string) => void;
-  onPaymentsDrawerClose: () => void;
+  isPaymentsDrawerOpen: boolean
+  onPaymentsDrawerOpen: (groupId: string) => void
+  onPaymentsDrawerClose: () => void
 
-  isSplitsDrawerOpen: boolean;
-  onSplitsDrawerOpen: (groupId: string) => void;
-  onSplitsDrawerClose: () => void;
+  isSplitsDrawerOpen: boolean
+  onSplitsDrawerOpen: (groupId: string) => void
+  onSplitsDrawerClose: () => void
 
-  clearExpenseDetails: () => void;
-};
+  clearExpenseDetails: () => void
+}
 
 export const useExpenseDetails = create<ExpenseDetails>((set) => ({
-  groupId: "",
+  groupId: '',
 
-  currency: "USD",
+  currency: 'USD',
   setCurrency: (currency) => set((state) => ({ ...state, currency })),
 
-  expenseName: "",
+  expenseName: '',
   setExpenseName: (expenseName) => set((state) => ({ ...state, expenseName })),
 
   expenseAmount: 0,
@@ -77,7 +77,7 @@ export const useExpenseDetails = create<ExpenseDetails>((set) => ({
   setPayments: (payments) => set((state) => ({ ...state, payments })),
   clearPayments: () => set((state) => ({ ...state, payments: [] })),
 
-  splitType: "equally" as const,
+  splitType: 'equally' as const,
   setSplitType: (splitType) => set((state) => ({ ...state, splitType })),
 
   splits: [],
@@ -97,10 +97,10 @@ export const useExpenseDetails = create<ExpenseDetails>((set) => ({
   onPaymentsDrawerClose: () => {
     set((state) => {
       if (Date.now() - state.breakPoint < 100) {
-        return { ...state, isPaymentsDrawerOpen: true };
+        return { ...state, isPaymentsDrawerOpen: true }
       }
-      return { ...state, groupId: "", isPaymentsDrawerOpen: false };
-    });
+      return { ...state, groupId: '', isPaymentsDrawerOpen: false }
+    })
   },
 
   isSplitsDrawerOpen: false,
@@ -114,22 +114,22 @@ export const useExpenseDetails = create<ExpenseDetails>((set) => ({
   onSplitsDrawerClose: () => {
     set((state) => {
       if (Date.now() - state.breakPoint < 100) {
-        return { ...state, isSplitsDrawerOpen: true };
+        return { ...state, isSplitsDrawerOpen: true }
       }
-      return { ...state, groupId: "", isSplitsDrawerOpen: false };
-    });
+      return { ...state, groupId: '', isSplitsDrawerOpen: false }
+    })
   },
 
   clearExpenseDetails: () =>
     set({
-      groupId: "",
-      currency: "USD",
-      expenseName: "",
+      groupId: '',
+      currency: 'USD',
+      expenseName: '',
       expenseAmount: 0,
       payments: [],
       splits: [],
-      splitType: "equally",
+      splitType: 'equally',
       isPaymentsDrawerOpen: false,
       isSplitsDrawerOpen: false,
     }),
-}));
+}))

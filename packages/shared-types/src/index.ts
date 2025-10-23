@@ -22,6 +22,8 @@ export const LogTypeEnum = [
   "FRIEND_REQUEST",
 ] as const;
 
+export type TCurrencyCode = (typeof CurrencyCodeEnum)[number];
+
 // Error codes and interface.
 export type TErrorCode =
   | "BAD_REQUEST"
