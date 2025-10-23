@@ -5,6 +5,15 @@ import { PageWrapper, SectionWrapper } from '@/components/legal/wrappers'
 import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/_landing/terms')({
+  head: () => ({
+    meta: [
+      { title: 'Terms of Service | FSplit' },
+      {
+        name: 'description',
+        content: 'Terms of Service for FSplit',
+      },
+    ],
+  }),
   component: TermsPage,
 })
 

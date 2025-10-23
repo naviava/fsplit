@@ -49,7 +49,7 @@ export function Footer() {
         ))}
       </div>
       <p className="mt-16 text-center text-xs text-neutral-300 lg:text-sm">
-        © 2024 Fondingo. All rights reserved.
+        © 2025 Fondingo. All rights reserved.
       </p>
     </div>
   )

@@ -3,6 +3,15 @@ import { LandingLayoutWrapper } from '@/components/global/landing-layout-wrapper
 import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/_landing/contact')({
+  head: () => ({
+    meta: [
+      { title: 'TContact Us | FSplit' },
+      {
+        name: 'description',
+        content: 'Contact us at FSplit',
+      },
+    ],
+  }),
   component: ContactPage,
 })
 

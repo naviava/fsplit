@@ -5,6 +5,15 @@ import { PageWrapper, SectionWrapper } from '@/components/legal/wrappers'
 import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/_landing/privacy-policy')({
+  head: () => ({
+    meta: [
+      { title: 'Privacy Policy | FSplit' },
+      {
+        name: 'description',
+        content: 'Privacy policy for FSplit',
+      },
+    ],
+  }),
   component: PrivacyPolicyPage,
 })
 
