@@ -1,6 +1,9 @@
 import type { TRPCRouterRecord } from "@trpc/server";
 import { publicProcedure } from "../trpc";
+
+import { initiateVerificationProcess } from "@fsplit/utils/server/user";
 import { newUserRegistrationSchema } from "@fsplit/types/zod";
+import { throwInternalServerError } from "@fsplit/utils";
 
 export const userRouter = {
   /**
@@ -10,12 +13,7 @@ export const userRouter = {
   newUserRegistration: publicProcedure
     .input(newUserRegistrationSchema)
     .mutation(async ({ input }) => {
-      const { displayName, email, firstName, lastName, phone } = input;
-
-      // TODO: Create confirm email token.
-
-      // TODO: Send verification email.
-
+      await initiateVerificationProcess(input);
       return {
         toastTitle: "Verification email sent",
         toastDescription:

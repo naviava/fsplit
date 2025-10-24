@@ -1,12 +1,15 @@
+import { useCallback, useMemo, useState } from 'react'
+
 import { registerFormSchema } from '@fsplit/types/zod'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useCallback, useMemo, useState } from 'react'
-import { useForm } from 'react-hook-form'
 import { z } from 'zod'
-import { Form } from '../ui/form'
-import { AuthFormInput } from './auth-form-input'
-import { Button } from '../ui/button'
+
 import { useNewUserRegistration } from '@/hooks/tsrq/use-profile'
+import { useForm } from 'react-hook-form'
+
+import { AuthFormInput } from './auth-form-input'
+import { Button } from '@/components/ui/button'
+import { Form } from '@/components/ui/form'
 
 interface IProps {
   disabled: boolean
@@ -16,7 +19,7 @@ export function RegisterForm({ disabled }: IProps) {
   const [emailSent, setEmailSent] = useState(false)
   const [isNavigating, setIsNavigating] = useState(false)
   const [isPasswordShown, setIsPasswordShown] = useState(false)
-  const { authSignUp } = useNewUserRegistration({
+  const { authSignUp, newUserRegistrationMutation } = useNewUserRegistration({
     setIsNavigating,
     setEmailSent,
   })
@@ -34,33 +37,16 @@ export function RegisterForm({ disabled }: IProps) {
     },
   })
 
-  const { mutate: handleCreateNewUser, isPending } =
-    trpc.user.createNewUser.useMutation({
-      onError: ({ message }) =>
-        toast({
-          title: 'Something went wrong',
-          description: message,
-        }),
-      onSuccess: async ({ toastTitle, toastDescription }) => {
-        setIsNavigating(true)
-        toast({
-          title: toastTitle,
-          description: toastDescription,
-        })
-        setEmailSent(true)
-      },
-    })
-
   const isLoading = useMemo(
-    () => disabled || isPending || isNavigating,
-    [disabled, isPending, isNavigating],
+    () => disabled || newUserRegistrationMutation.isPending || isNavigating,
+    [disabled, newUserRegistrationMutation.isPending, isNavigating],
   )
 
   const onSubmit = useCallback(
     (values: z.infer<typeof registerFormSchema>) => {
-      handleCreateNewUser(values)
+      authSignUp(values)
     },
-    [handleCreateNewUser],
+    [authSignUp],
   )
 
   return (

@@ -1,15 +1,19 @@
-import { nanoid } from '@fsplit/utils'
+import { useState } from 'react'
+
 // import { RiTwitterXFill } from 'react-icons/ri'
 // import { FaFacebook } from 'react-icons/fa6'
 import { FaDiscord } from 'react-icons/fa6'
 import { SiGithub } from 'react-icons/si'
 import { FcGoogle } from 'react-icons/fc'
+
 import { useAuthForm } from '@/store/use-auth-form'
-import { useState } from 'react'
-import { cn } from '@/lib/utils'
-import { Button } from '../ui/button'
+
 import { SocialAuthButton } from './social-auth-button'
+import { Button } from '@/components/ui/button'
 import { RegisterForm } from './register-form'
+
+import { nanoid } from '@fsplit/utils'
+import { cn } from '@/lib/utils'
 
 const OPTIONS = [
   // {

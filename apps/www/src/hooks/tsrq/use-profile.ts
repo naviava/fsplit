@@ -1,11 +1,11 @@
 import { useCallback } from 'react'
 
-import { authClient } from '@/lib/auth-client'
+import { useMutation } from '@tanstack/react-query'
 import { useTRPC } from '@/lib/trpc'
 
 import { toast } from '@/components/ui/use-toast'
+import { authClient } from '@/lib/auth-client'
 import Env from '@/lib/env'
-import { useMutation } from '@tanstack/react-query'
 
 export function useNewUserRegistration(state: {
   setIsNavigating: (value: boolean) => void
@@ -13,7 +13,7 @@ export function useNewUserRegistration(state: {
 }) {
   const api = useTRPC()
 
-  const newUserRegistrationMutation =
+  const newUserRegistrationMutationOptions =
     api.user.newUserRegistration.mutationOptions({
       onError: ({ message }) =>
         toast({
@@ -30,7 +30,9 @@ export function useNewUserRegistration(state: {
       },
     })
 
-  const mutation = useMutation(newUserRegistrationMutation)
+  const newUserRegistrationMutation = useMutation(
+    newUserRegistrationMutationOptions,
+  )
 
   const authSignUp = useCallback(
     async (params: {
@@ -38,9 +40,9 @@ export function useNewUserRegistration(state: {
       displayName: string
       password: string
       confirmPassword: string
-      firstName: string
-      lastName: string
-      phone: string
+      firstName?: string | undefined
+      lastName?: string | undefined
+      phone?: string | undefined
     }) => {
       await authClient.signUp.email(
         {
@@ -58,10 +60,11 @@ export function useNewUserRegistration(state: {
             })
           },
 
-          onSuccess: ({ data }) => {
+          onSuccess: ({ response }) => {
+            console.log(response)
             state.setIsNavigating(true)
 
-            mutation.mutate({
+            newUserRegistrationMutation.mutate({
               displayName: params.displayName,
               email: params.email,
               firstName: params.firstName,
@@ -72,8 +75,8 @@ export function useNewUserRegistration(state: {
         },
       )
     },
-    [authClient, state.setIsNavigating, state.setEmailSent],
+    [authClient, newUserRegistrationMutation, state.setIsNavigating],
   )
 
-  return { authSignUp }
+  return { authSignUp, newUserRegistrationMutation }
 }

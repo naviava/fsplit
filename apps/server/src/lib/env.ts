@@ -5,6 +5,7 @@ class Env {
   static GITHUB_CLIENT_ID: string = process.env.GITHUB_CLIENT_ID as string;
   static GITHUB_CLIENT_SECRET: string = process.env
     .GITHUB_CLIENT_SECRET as string;
+  static RESEND_API_KEY: string = process.env.RESEND_API_KEY as string;
 }
 
 export default Env;

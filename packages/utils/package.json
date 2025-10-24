@@ -19,6 +19,8 @@
     "@fsplit/db": "*",
     "@fsplit/redis": "*",
     "@trpc/server": "^11.5.1",
-    "nanoid": "^5.1.6"
+    "nanoid": "^5.1.6",
+    "resend": "^6.2.2",
+    "zod": "^4.1.12"
   }
 }

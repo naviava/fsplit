@@ -1,9 +1,12 @@
-import { AuthClient } from '@/components/auth-client'
-import { Logo } from '@/components/logo'
-import { authClient } from '@/lib/auth-client'
-import { cn } from '@/lib/utils'
-import { useAuthForm } from '@/store/use-auth-form'
 import { createFileRoute, Link, redirect } from '@tanstack/react-router'
+
+import { useAuthForm } from '@/store/use-auth-form'
+
+import { AuthClient } from '@/components/auth-client'
+import { authClient } from '@/lib/auth-client'
+import { Logo } from '@/components/logo'
+
+import { cn } from '@/lib/utils'
 
 export const Route = createFileRoute('/signin')({
   head: () => ({
