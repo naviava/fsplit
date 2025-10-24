@@ -9,6 +9,7 @@ import { useState } from 'react'
 import { cn } from '@/lib/utils'
 import { Button } from '../ui/button'
 import { SocialAuthButton } from './social-auth-button'
+import { RegisterForm } from './register-form'
 
 const OPTIONS = [
   // {
@@ -48,8 +49,8 @@ export function AuthClient() {
 
   return (
     <div className="z-[2] flex w-full max-w-[30rem] flex-col items-center rounded-[2rem] bg-black/10 p-8 backdrop-blur-md">
-      {/* {formType === 'signin' && <SigninForm disabled={disabled} />}
-      {formType === 'register' && <RegisterForm disabled={disabled} />} */}
+      {/* {formType === 'signin' && <SigninForm disabled={disabled} />} */}
+      {formType === 'register' && <RegisterForm disabled={disabled} />}
       <div className="mt-8 text-center">
         {formType === 'signin' && (
           <>

@@ -37,3 +37,16 @@ export const registerFormSchema = z
     message: "Passwords don't match",
     path: ["confirmPassword"],
   });
+
+export const newUserRegistrationSchema = z.object({
+  displayName: z
+    .string()
+    .min(1, { message: "Display name cannot be empty" })
+    .max(20, {
+      message: "Display name cannot be longer than 20 characters.",
+    }),
+  email: z.email({ message: "Invalid email" }),
+  firstName: z.string().optional(),
+  lastName: z.string().optional(),
+  phone: z.string().optional(),
+});

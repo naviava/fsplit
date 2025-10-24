@@ -6,6 +6,7 @@ import { z } from 'zod'
 import { Form } from '../ui/form'
 import { AuthFormInput } from './auth-form-input'
 import { Button } from '../ui/button'
+import { useNewUserRegistration } from '@/hooks/tsrq/use-profile'
 
 interface IProps {
   disabled: boolean
@@ -15,6 +16,10 @@ export function RegisterForm({ disabled }: IProps) {
   const [emailSent, setEmailSent] = useState(false)
   const [isNavigating, setIsNavigating] = useState(false)
   const [isPasswordShown, setIsPasswordShown] = useState(false)
+  const { authSignUp } = useNewUserRegistration({
+    setIsNavigating,
+    setEmailSent,
+  })
 
   const form = useForm<z.infer<typeof registerFormSchema>>({
     resolver: zodResolver(registerFormSchema),

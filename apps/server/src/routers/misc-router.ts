@@ -10,7 +10,7 @@ export const miscRouter = {
       const email = input.email.toLowerCase();
       const { fullName, message } = input;
 
-      const newEntry = await createContactFormEntry({
+      await createContactFormEntry({
         name: fullName,
         email,
         message,
