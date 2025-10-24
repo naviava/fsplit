@@ -33,7 +33,7 @@ function AuthPage() {
 
   return (
     <div
-      className="flex h-full flex-col bg-cover bg-left-top bg-no-repeat transition-all duration-500 md:bg-center"
+      className="flex h-screen flex-col bg-cover bg-left-top bg-no-repeat transition-all duration-500 md:bg-center"
       style={{
         backgroundImage: 'url(/images/auth-bg.jpg)',
       }}

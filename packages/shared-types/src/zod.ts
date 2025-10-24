@@ -50,3 +50,8 @@ export const newUserRegistrationSchema = z.object({
   lastName: z.string().optional(),
   phone: z.string().optional(),
 });
+
+export const loginFormSchema = z.object({
+  email: z.email({ message: "Invalid email" }),
+  password: z.string().min(6, { message: "Password too short" }),
+});

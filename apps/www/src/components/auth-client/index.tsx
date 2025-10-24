@@ -11,6 +11,7 @@ import { useAuthForm } from '@/store/use-auth-form'
 import { SocialAuthButton } from './social-auth-button'
 import { Button } from '@/components/ui/button'
 import { RegisterForm } from './register-form'
+import { SigninForm } from './signin-form'
 
 import { nanoid } from '@fsplit/utils'
 import { cn } from '@/lib/utils'
@@ -53,7 +54,7 @@ export function AuthClient() {
 
   return (
     <div className="z-[2] flex w-full max-w-[30rem] flex-col items-center rounded-[2rem] bg-black/10 p-8 backdrop-blur-md">
-      {/* {formType === 'signin' && <SigninForm disabled={disabled} />} */}
+      {formType === 'signin' && <SigninForm disabled={disabled} />}
       {formType === 'register' && <RegisterForm disabled={disabled} />}
       <div className="mt-8 text-center">
         {formType === 'signin' && (
