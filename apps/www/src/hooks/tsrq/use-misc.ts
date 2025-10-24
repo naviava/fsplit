@@ -13,7 +13,6 @@ export function useContactForm() {
         title: 'Something went wrong',
         description:
           message || 'Failed to send your message. Please try again later.',
-        variant: 'destructive',
       }),
     onSuccess: ({ toastTitle, toastDescription }) => {
       toast({

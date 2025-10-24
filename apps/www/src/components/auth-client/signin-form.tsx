@@ -57,7 +57,6 @@ export function SigninForm({ disabled }: IProps) {
           title: 'Sign in failed',
           description:
             'Invalid credentials or email not verified. Check your email for verification link.',
-          variant: 'destructive',
         })
         return
       }

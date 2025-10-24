@@ -3,6 +3,7 @@ import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import { TanstackDevtools } from '@tanstack/react-devtools'
 
 import { Providers } from '@/providers'
+import { Toaster } from '@/components/ui/toaster'
 
 export const Route = createRootRoute({
   component: () => {
@@ -10,6 +11,7 @@ export const Route = createRootRoute({
       <Providers>
         <HeadContent />
         <Outlet />
+        <Toaster />
         <TanstackDevtools
           config={{
             position: 'bottom-right',

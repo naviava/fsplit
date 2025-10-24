@@ -19,7 +19,6 @@ export function useNewUserRegistration(state: {
         toast({
           title: 'Something went wrong',
           description: message,
-          variant: 'destructive',
         }),
       onSuccess: ({ toastTitle, toastDescription }) => {
         state.setEmailSent(true)
@@ -56,7 +55,6 @@ export function useNewUserRegistration(state: {
             toast({
               title: 'Sign Up Failed',
               description: error.message,
-              variant: 'destructive',
             })
           },
 
